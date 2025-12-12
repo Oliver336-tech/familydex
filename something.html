@@ -5258,4 +5258,58 @@ const DomPatch = (() => {
  *****************************************************************/
 </script>
 <!-- ============ CHUNK 10/10 END ============ -->
+<script>
+/*****************************************************************
+ * FEATURE CARD CLICK WIRING (FIX)
+ *****************************************************************/
+(() => {
+  const cards = document.querySelectorAll(".card");
 
+  const route = (title) => {
+    switch(title){
+      case "Play":
+      case "BATTLE LAB":
+        Game.startLab("Oliver","Endrit");
+        break;
+
+      case "STORY MODE":
+        Story.startChapter(window.__SAVE.story.chapterIndex || 0);
+        break;
+
+      case "TOURNAMENT":
+        Tournament.start(0);
+        break;
+
+      case "MULTIPLAYER":
+        Multiplayer.openLobby();
+        break;
+
+      case "COMPENDIUM":
+        Encyclopedia.open();
+        break;
+
+      case "SETTINGS & ACCESSIBILITY":
+        Modal.openSettings();
+        break;
+    }
+  };
+
+  cards.forEach(card => {
+    const titleEl = card.querySelector(".cardTitle, h3, b");
+    if(!titleEl) return;
+
+    const title = titleEl.textContent.trim().toUpperCase();
+
+    card.style.cursor = "pointer";
+    card.addEventListener("click", (e) => {
+      // Prevent double-fire if button inside was clicked
+      if(e.target.closest("button")) return;
+
+      AudioSys.play("click", 0.7);
+      route(title);
+    });
+  });
+})();
+</script>
+</body>
+</html>
