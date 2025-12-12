@@ -5260,56 +5260,53 @@ const DomPatch = (() => {
 <!-- ============ CHUNK 10/10 END ============ -->
 <script>
 /*****************************************************************
- * FEATURE CARD CLICK WIRING (FIX)
+ * FEATURE TILE CLICK FIX (ROBUST)
  *****************************************************************/
 (() => {
-  const cards = document.querySelectorAll(".card");
+  const tiles = Array.from(document.querySelectorAll("div"))
+    .filter(el =>
+      el.textContent.includes("STORY MODE") ||
+      el.textContent.includes("TOURNAMENT") ||
+      el.textContent.includes("MULTIPLAYER") ||
+      el.textContent.includes("BATTLE LAB") ||
+      el.textContent.includes("COMPENDIUM") ||
+      el.textContent.includes("SETTINGS")
+    );
 
-  const route = (title) => {
-    switch(title){
-      case "Play":
-      case "BATTLE LAB":
-        Game.startLab("Oliver","Endrit");
-        break;
+  const go = (text) => {
+    text = text.toUpperCase();
 
-      case "STORY MODE":
-        Story.startChapter(window.__SAVE.story.chapterIndex || 0);
-        break;
-
-      case "TOURNAMENT":
-        Tournament.start(0);
-        break;
-
-      case "MULTIPLAYER":
-        Multiplayer.openLobby();
-        break;
-
-      case "COMPENDIUM":
-        Encyclopedia.open();
-        break;
-
-      case "SETTINGS & ACCESSIBILITY":
-        Modal.openSettings();
-        break;
+    if (text.includes("STORY")) {
+      Story.startChapter(window.__SAVE.story.chapterIndex || 0);
+    }
+    else if (text.includes("TOURNAMENT")) {
+      Tournament.start(0);
+    }
+    else if (text.includes("MULTIPLAYER")) {
+      Multiplayer.openLobby();
+    }
+    else if (text.includes("BATTLE")) {
+      Game.startLab("Oliver","Endrit");
+    }
+    else if (text.includes("COMPENDIUM")) {
+      Encyclopedia.open();
+    }
+    else if (text.includes("SETTINGS")) {
+      Modal.openSettings();
     }
   };
 
-  cards.forEach(card => {
-    const titleEl = card.querySelector(".cardTitle, h3, b");
-    if(!titleEl) return;
-
-    const title = titleEl.textContent.trim().toUpperCase();
-
-    card.style.cursor = "pointer";
-    card.addEventListener("click", (e) => {
-      // Prevent double-fire if button inside was clicked
-      if(e.target.closest("button")) return;
-
+  tiles.forEach(tile => {
+    tile.style.cursor = "pointer";
+    tile.addEventListener("click", (e) => {
       AudioSys.play("click", 0.7);
-      route(title);
+      go(tile.textContent);
     });
   });
+
+  console.log("✅ Feature tiles wired:", tiles.length);
 })();
 </script>
+
 </body>
 </html>
